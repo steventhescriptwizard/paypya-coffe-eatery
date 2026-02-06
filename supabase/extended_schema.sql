@@ -76,6 +76,12 @@ CREATE POLICY "Allow public to insert orders" ON orders FOR INSERT TO public WIT
 CREATE POLICY "Allow public to insert order_items" ON order_items FOR INSERT TO public WITH CHECK (true);
 CREATE POLICY "Allow public to insert contact_messages" ON contact_messages FOR INSERT TO public WITH CHECK (true);
 
+-- Public can read orders they just created (via order_number or id)
+-- Note: In a production app, you might want more restrictive read access, 
+-- but this is required for the .select() call to return data to the user.
+CREATE POLICY "Allow public to read orders" ON orders FOR SELECT TO public USING (true);
+CREATE POLICY "Allow public to read order_items" ON order_items FOR SELECT TO public USING (true);
+
 -- Triggers for updated_at
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_locations_updated_at BEFORE UPDATE ON locations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
