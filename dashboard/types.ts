@@ -25,6 +25,7 @@ export enum RoutePath {
   PRODUCT_CREATE = '/dashboard/products/new',
   PRODUCT_EDIT = '/dashboard/products/:id/edit',
   ORDERS = '/dashboard/orders',
+  POS = '/dashboard/pos',
   QR_GENERATOR = '/dashboard/qr-generator',
   SETTINGS = '/dashboard/settings',
   LOGIN = '/login',

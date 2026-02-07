@@ -121,10 +121,10 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ order, onBack }) => {
                 </div>
               </div>
               <div className="text-xs text-text-secondary dark:text-gray-400 dark:print:text-gray-600 space-y-1">
-                <p className="font-bold text-text-main dark:text-white dark:print:text-black">PAYPYA Cafe & Resto</p>
-                <p>Jl. Jend. Sudirman Kav. 52-53, SCBD</p>
-                <p>Jakarta Selatan, 12190</p>
-                <p>hello@paypya.com | (021) 555-0123</p>
+                <p className="font-bold text-text-main dark:text-white dark:print:text-black">PAYPYA Cafe</p>
+                <p>Jl. Waiwerang Sagu, Waiwerang Kota, Kec. Adonara Tim.</p>
+                <p>Kabupaten Flores Timur, Nusa Tenggara Tim.</p>
+                <p>hello@paypya.com | +62 823 2409 3711</p>
               </div>
             </div>
             <div className="text-right">
@@ -220,9 +220,9 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ order, onBack }) => {
           {/* Footer Branding */}
           <div className="mt-24 pt-12 border-t border-dashed border-[#e6e0db] dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-8 opacity-70">
             <div className="text-center md:text-left">
-              <h3 className="text-sm font-black text-text-main dark:text-white dark:print:text-black mb-1">PAYPYA Cafe & Resto</h3>
+              <h3 className="text-sm font-black text-text-main dark:text-white dark:print:text-black mb-1">PAYPYA Cafe</h3>
               <p className="text-[10px] text-text-secondary dark:text-gray-500 max-w-[240px]">
-                Jl. Jend. Sudirman Kav. 52-53, Jakarta Selatan. Thank you for dining with us!
+                Jl. Waiwerang Sagu, Waiwerang Kota, Kec. Adonara Tim., Kabupaten Flores Timur. Thank you for dining with us!
               </p>
             </div>
             <div className="flex items-center gap-4 text-text-secondary dark:text-gray-500">

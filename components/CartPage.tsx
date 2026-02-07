@@ -4,60 +4,71 @@ import { formatIDR } from '../utils/format';
 
 interface CartPageProps {
   items: CartItem[];
-  onUpdateQuantity: (id: string, quantity: number) => void;
+  onUpdateQuantity: (id: string, newQuantity: number) => void;
   onRemoveItem: (id: string) => void;
   onBackToMenu: () => void;
-  onCheckout: (items: CartItem[], total: number, customerName: string, tableNumber: string) => void;
+  onCheckout: (items: CartItem[], total: number, customerName: string, tableNumber: string, paymentMethod: 'cashier' | 'wa_checkout') => Promise<void>;
 }
 
 export const CartPage: React.FC<CartPageProps> = ({ items, onUpdateQuantity, onRemoveItem, onBackToMenu, onCheckout }) => {
   const [customerName, setCustomerName] = React.useState('');
   const [tableNumber, setTableNumber] = React.useState('');
+  const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [isTableLocked, setIsTableLocked] = React.useState(false);
+  const [paymentMethod, setPaymentMethod] = React.useState<'cashier' | 'wa_checkout'>('cashier');
   
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const total = subtotal;
 
   React.useEffect(() => {
-    const savedName = localStorage.getItem('paypya_customer_name');
+    const savedName = localStorage.getItem('paypya_customer_name'); // Keep this for now, as the input still uses it
     const savedTable = localStorage.getItem('paypya_table_number');
     const tableLocked = localStorage.getItem('paypya_table_locked') === 'true';
-    if (savedName) setCustomerName(savedName);
+    if (savedName) setCustomerName(savedName); // Keep this for now
     if (savedTable) setTableNumber(savedTable);
     setIsTableLocked(tableLocked);
   }, []);
 
-  const handleCheckout = () => {
-    if (!customerName || !tableNumber) {
-      alert('Please enter your name and table number');
+  const handleCheckout = async () => {
+    if (!customerName.trim() || !tableNumber.trim()) {
+      alert('Tolong isi Nama dan Nomor Meja Anda');
       return;
     }
 
-    // Save to localStorage
-    localStorage.setItem('paypya_customer_name', customerName);
-    localStorage.setItem('paypya_table_number', tableNumber);
+    try {
+      setIsCheckingOut(true);
+      
+      // Pass all data to onCheckout in App.tsx
+      await onCheckout(items, subtotal, customerName, tableNumber, paymentMethod);
 
-    // Replace with your actual WhatsApp number
-    const whatsappNumber = "6282324093711"; 
-    
-    let message = `*PESANAN BARU - MEJA ${tableNumber}*\n`;
-    message += `Nama: ${customerName}\n`;
-    message += `----------------------------\n\n`;
-    
-    items.forEach(item => {
-      message += `${item.quantity}x ${item.name} - ${formatIDR(item.price * item.quantity)}\n`;
-    });
-    
-    message += `\n----------------------------\n`;
-    message += `Subtotal: ${formatIDR(subtotal)}`;
-    message += `\n*Total: ${formatIDR(total)}*`;
-    message += `\n\nMohon segera di proses ya Kaka, Terima Kasih! 🙏`;
-    
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    
-    onCheckout(items, total, customerName, tableNumber);
-    
-    window.open(url, '_blank');
+      if (paymentMethod === 'wa_checkout') {
+        const whatsappNumber = "6282324093711"; 
+        
+        let message = `*PESANAN BARU*\n`;
+        message += `Nama: ${customerName}\n`;
+        message += `Meja: ${tableNumber}\n`;
+        message += `Metode: WhatsApp Checkout\n`;
+        message += `----------------------------\n\n`;
+        
+        items.forEach(item => {
+          message += `${item.quantity}x ${item.name} - ${formatIDR(item.price * item.quantity)}\n`;
+        });
+        
+        message += `\n----------------------------\n`;
+        message += `*Total: ${formatIDR(subtotal)}*`;
+        message += `\n\nMohon segera diproses ya Kaka, Terima Kasih! 🙏`;
+        
+        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      } else {
+        alert('Pemesanan Berhasil! Silakan tunjukkan Invoice Anda ke kasir untuk melakukan pembayaran.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Gagal memproses pesanan. Silakan coba lagi.');
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   if (items.length === 0) {
@@ -195,20 +206,62 @@ export const CartPage: React.FC<CartPageProps> = ({ items, onUpdateQuantity, onR
               </div>
             </div>
 
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-bold text-text-main dark:text-white">Total</span>
               <span className="text-2xl font-black text-primary">{formatIDR(total)}</span>
             </div>
 
+            {/* Payment Method Selection */}
+            <div className="flex flex-col gap-3 mb-6">
+              <label className="text-[10px] font-black text-text-secondary dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Metode Pembayaran</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setPaymentMethod('cashier')}
+                  className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border transition-all ${
+                    paymentMethod === 'cashier' 
+                      ? 'bg-primary/10 border-primary text-primary shadow-sm' 
+                      : 'bg-background-light dark:bg-white/5 border-[#f4f2f0] dark:border-white/10 text-text-secondary dark:text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-2xl">payments</span>
+                  <span className="text-[10px] font-bold uppercase tracking-tight">Kasir</span>
+                </button>
+                <button
+                  onClick={() => setPaymentMethod('wa_checkout')}
+                  className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border transition-all ${
+                    paymentMethod === 'wa_checkout' 
+                      ? 'bg-[#25D366]/10 border-[#25D366] text-[#25D366] shadow-sm' 
+                      : 'bg-background-light dark:bg-white/5 border-[#f4f2f0] dark:border-white/10 text-text-secondary dark:text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-2xl">chat</span>
+                  <span className="text-[10px] font-bold uppercase tracking-tight">WhatsApp</span>
+                </button>
+              </div>
+            </div>
+
             <button 
               onClick={handleCheckout}
-              disabled={!customerName.trim() || !tableNumber.trim()}
-              className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-green-200"
+              disabled={isCheckingOut || !customerName.trim() || !tableNumber.trim()}
+              className={`w-full py-4 rounded-2xl font-black text-white text-lg transition-all active:scale-[0.98] shadow-xl flex items-center justify-center gap-3 ${
+                paymentMethod === 'wa_checkout' 
+                  ? 'bg-[#25D366] hover:bg-[#20bd5a] shadow-[#25D366]/20' 
+                  : 'bg-primary hover:bg-primary-dark shadow-primary/20'
+              } ${isCheckingOut ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.248-.57-.397M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.698c.93.509 1.693.803 2.805.803 3.181 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.784-5.767-5.784zm9.391 3.66c-.366-1.055-.957-2.005-1.713-2.768a8.312 8.312 0 0 0-2.825-1.742c-1.11-.383-2.288-.582-3.486-.582-5.462 0-9.92 4.195-9.92 9.429 0 1.956.574 3.737 1.547 5.385l-1.026 3.864 3.998-1.055c1.474.832 3.129 1.295 4.888 1.295 5.925 0 10.748-4.819 10.748-10.744 0-1.08-.2-2.115-.561-3.082h-1.65v.001z"/>
-              </svg>
-              Checkout via WhatsApp
+              {isCheckingOut ? (
+                'Memproses...'
+              ) : paymentMethod === 'wa_checkout' ? (
+                <>
+                  <span className="material-symbols-outlined">send</span>
+                  Checkout via WA
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined">receipt_long</span>
+                  Pesan Sekarang
+                </>
+              )}
             </button>
             <p className="text-center text-xs text-text-secondary dark:text-gray-400 mt-3">
               Proceed to send your order details directly to our staff.

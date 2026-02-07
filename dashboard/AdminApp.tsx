@@ -10,6 +10,7 @@ import { MenuGrid } from './pages/MenuGrid';
 import { ProductCreate } from './pages/ProductCreate';
 import { ProductEdit } from './pages/ProductEdit';
 import { OrderList } from './pages/OrderList';
+import { POSPage } from './pages/POSPage';
 import { QRGenerator } from './pages/QRGenerator';
 import { RoutePath } from './types';
 import { useAuth } from '../components/AuthProvider';
@@ -89,6 +90,7 @@ export function AdminApp() {
         <Route path="products/new" element={<ProductCreate />} />
         <Route path="products/:id/edit" element={<ProductEdit />} />
         <Route path="orders" element={<OrderList />} />
+        <Route path="pos" element={<POSPage />} />
         <Route path="qr-generator" element={<QRGenerator />} />
         
         {/* Fallback within dashboard redirects to dashboard home */}

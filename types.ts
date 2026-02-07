@@ -44,6 +44,8 @@ export interface Order {
   status: 'sent' | 'Pending' | 'Cooking' | 'Completed' | 'Cancelled';
   customerName?: string;
   tableNumber?: string;
+  paymentMethod?: 'cashier' | 'wa_checkout';
+  order_number?: string;
 }
 
 // Helper functions to convert database types to app types

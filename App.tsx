@@ -144,7 +144,7 @@ function App() {
     setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
-  const handlePlaceOrder = async (items: CartItem[], total: number, customerName: string, tableNumber: string) => {
+  const handlePlaceOrder = async (items: CartItem[], total: number, customerName: string, tableNumber: string, paymentMethod: 'cashier' | 'wa_checkout') => {
     try {
       setLoading(true);
       
@@ -153,7 +153,8 @@ function App() {
         { 
           total_amount: total,
           customer_name: customerName,
-          table_number: tableNumber
+          table_number: tableNumber,
+          payment_method: paymentMethod
         },
         items.map(item => ({
           product_id: item.id,
@@ -164,20 +165,23 @@ function App() {
 
       // Save to local history using REAL order number
       const newOrder: Order = {
-        id: order.order_number, // Use the server-generated order number
+        id: order.id, // ID from Supabase
+        order_number: order.order_number,
         date: new Date().toISOString(),
         items: items,
         total: total,
-        status: 'sent',
+        status: 'Pending',
         customerName,
-        tableNumber
+        tableNumber,
+        paymentMethod
       };
       
       const existingOrders = JSON.parse(localStorage.getItem('paypya_orders') || '[]');
       localStorage.setItem('paypya_orders', JSON.stringify([newOrder, ...existingOrders]));
       
       setCartItems([]);
-      setCurrentView('orders');
+      setSelectedOrder(newOrder);
+      setCurrentView('invoice');
     } catch (err) {
       console.error('Failed to place order:', err);
       alert('Failed to place order. Please try again.');

@@ -96,6 +96,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user }) => {
               <span className={iconClass(RoutePath.ORDERS)}>receipt_long</span>
               <p className="text-sm">Manage Orders</p>
             </Link>
+            <Link to={RoutePath.POS} onClick={handleNavClick} className={navItemClass(RoutePath.POS)}>
+              <span className={iconClass(RoutePath.POS)}>point_of_sale</span>
+              <p className="text-sm">POS System</p>
+            </Link>
             <Link to={RoutePath.QR_GENERATOR} onClick={handleNavClick} className={navItemClass(RoutePath.QR_GENERATOR)}>
               <span className={iconClass(RoutePath.QR_GENERATOR)}>qr_code_2</span>
               <p className="text-sm">QR Generator</p>

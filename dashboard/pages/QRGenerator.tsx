@@ -98,7 +98,7 @@ export const QRGenerator: React.FC = () => {
                             </p>
                         </div>
                     </div>
-
+                    
                     {/* Preview Side */}
                     <div className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl border border-border-light dark:border-border-dark shadow-sm flex flex-col items-center justify-center gap-6 group print:shadow-none print:border-none">
                         <div className="text-center">
