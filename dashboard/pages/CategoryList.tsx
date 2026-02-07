@@ -172,7 +172,7 @@ export const CategoryList: React.FC = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          to={`/categories/${category.id}/edit`}
+                          to={RoutePath.CATEGORY_EDIT.replace(':id', category.id)}
                           className="p-1.5 text-text-sub-light dark:text-text-sub-dark hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors"
                           title="Edit"
                         >

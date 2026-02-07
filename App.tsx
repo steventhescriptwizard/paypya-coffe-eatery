@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './components/AuthProvider';
 import { ProductCard } from './components/ProductCard';
 import { CartPage } from './components/CartPage';
 import { LocationsPage } from './components/LocationsPage';
@@ -27,6 +29,15 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect logged-in users to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   // Load categories and products from Supabase
   useEffect(() => {

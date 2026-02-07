@@ -14,7 +14,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user }) => {
 
   const isActive = (path: string) => {
     if (path === RoutePath.CATEGORIES) {
-      return location.pathname.startsWith('/categories');
+      return location.pathname.startsWith(RoutePath.CATEGORIES);
     }
     return location.pathname === path;
   };

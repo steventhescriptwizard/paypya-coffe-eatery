@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RoutePath } from '../types';
 import { signIn } from '../../services/authService';
+import { useAuth } from '../../components/AuthProvider';
+import { useEffect } from 'react';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -9,6 +11,13 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate(RoutePath.DASHBOARD);
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
