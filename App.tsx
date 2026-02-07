@@ -61,6 +61,17 @@ function App() {
     loadData();
   }, []);
 
+  // Detect table number from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tableId = params.get('table');
+    if (tableId) {
+      localStorage.setItem('paypya_table_number', tableId);
+      localStorage.setItem('paypya_table_locked', 'true');
+      console.log('Detected table number from URL:', tableId);
+    }
+  }, []);
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {

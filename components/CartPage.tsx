@@ -13,6 +13,7 @@ interface CartPageProps {
 export const CartPage: React.FC<CartPageProps> = ({ items, onUpdateQuantity, onRemoveItem, onBackToMenu, onCheckout }) => {
   const [customerName, setCustomerName] = React.useState('');
   const [tableNumber, setTableNumber] = React.useState('');
+  const [isTableLocked, setIsTableLocked] = React.useState(false);
   
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const total = subtotal;
@@ -20,8 +21,10 @@ export const CartPage: React.FC<CartPageProps> = ({ items, onUpdateQuantity, onR
   React.useEffect(() => {
     const savedName = localStorage.getItem('paypya_customer_name');
     const savedTable = localStorage.getItem('paypya_table_number');
+    const tableLocked = localStorage.getItem('paypya_table_locked') === 'true';
     if (savedName) setCustomerName(savedName);
     if (savedTable) setTableNumber(savedTable);
+    setIsTableLocked(tableLocked);
   }, []);
 
   const handleCheckout = () => {
@@ -162,15 +165,24 @@ export const CartPage: React.FC<CartPageProps> = ({ items, onUpdateQuantity, onR
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-black text-text-secondary dark:text-gray-400 uppercase tracking-wider">Table Number</label>
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-black text-text-secondary dark:text-gray-400 uppercase tracking-wider">Table Number</label>
+                  {isTableLocked && (
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-500 uppercase tracking-tight">
+                      <span className="material-symbols-outlined text-xs">lock</span>
+                      Locked by QR
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">table_restaurant</span>
                   <input 
                     type="text" 
                     placeholder="E.g. 12"
                     value={tableNumber}
-                    onChange={(e) => setTableNumber(e.target.value)}
-                    className="w-full bg-background-light dark:bg-white/5 border border-[#f4f2f0] dark:border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all underline-none"
+                    onChange={(e) => !isTableLocked && setTableNumber(e.target.value)}
+                    readOnly={isTableLocked}
+                    className={`w-full bg-background-light dark:bg-white/5 border border-[#f4f2f0] dark:border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm font-bold text-text-main dark:text-white outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all underline-none ${isTableLocked ? 'opacity-70 cursor-not-allowed bg-gray-50 dark:bg-white/5' : ''}`}
                   />
                 </div>
               </div>
