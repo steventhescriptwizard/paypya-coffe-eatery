@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>PAYPYA Menu Catalog</title>
+
+        <!-- Icon -->
+        <link rel="Icon" type="images/png" href="/assets/brochure-Bqvee_K_.png"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "var(--primary)",
+                            "primary-dark": "var(--primary-dark)",
+                            "background-light": "var(--background-light)",
+                            "background-dark": "var(--background-dark)",
+                            "surface-light": "var(--surface-light)",
+                            "surface-dark": "var(--surface-dark)",
+                            "border-light": "var(--border-light)",
+                            "border-dark": "var(--border-dark)",
+                            "text-main-light": "var(--text-main-light, var(--text-main))",
+                            "text-main-dark": "var(--text-main-dark, var(--background-light))",
+                            "text-sub-light": "var(--text-sub-light, var(--text-secondary))",
+                            "text-sub-dark": "var(--text-sub-dark, #9ca3af)",
+                            // Legacy mappings for catalog
+                            "text-main": "var(--text-main)",
+                            "text-secondary": "var(--text-secondary)"
+                        },
+                        fontFamily: {
+                            display: [
+                                "var(--font-display)", "sans-serif"
+                            ],
+                            body: ["var(--font-body)", "sans-serif"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "var(--radius-default)",
+                            "lg": "var(--radius-lg)",
+                            "xl": "var(--radius-xl)"
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': {
+                                    opacity: '0',
+                                    transform: 'translateY(10px)'
+                                },
+                                '100%': {
+                                    opacity: '1',
+                                    transform: 'translateY(0)'
+                                }
+                            }
+                        },
+                        animation: {
+                            'fade-in': 'fadeIn 0.4s ease-out forwards'
+                        }
+                    }
+                }
+            };
+        </script>
+        <style>:root
+        {
+            /* Catalog Theme (Orange) */
+            --primary: #ee7c2b;
+            --primary-dark: #d66a1e;
+            --background-light: #f8f7f6;
+            --background-dark: #221810;
+            --surface-light: #ffffff;
+            --surface-dark: #2c241b;
+            --border-light: #e6e0db;
+            --border-dark: rgba(255, 255, 255, 0.05);
+            --text-main: #181411;
+            --text-secondary: #897261;
+            --font-display: 'Outfit';
+            --font-body: 'Plus Jakarta Sans';
+            --radius-default: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+        }
+
+        .admin-theme {
+            /* FoodAdmin Theme (Blue) */
+            --primary: #135bec;
+            --primary-dark: #1049c0;
+            --background-light: #f6f6f8;
+            --background-dark: #101622;
+            --surface-light: #ffffff;
+            --surface-dark: #1a2230;
+            --border-light: #e7ebf3;
+            --border-dark: #2a3649;
+            --text-main-light: #0d121b;
+            --text-main-dark: #ffffff;
+            --text-sub-light: #4c669a;
+            --text-sub-dark: #9ca3af;
+            /* Overrides for catalog names if used in admin */
+            --text-main: #0d121b;
+            --text-secondary: #4c669a;
+            --font-display: 'Manrope';
+            --font-body: 'Noto Sans';
+            --radius-default: 0.25rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+        }
+
+        body {
+            font-family: var(--font-body), sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    </style>
+
+    <script type="importmap">
+        {
+                                                                                                  "imports": {
+                                                                                                    "react/": "https://esm.sh/react@^19.2.4/",
+                                                                                                    "react": "https://esm.sh/react@^19.2.4",
+                                                                                                    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+                                                                                                  }
+                                                                                                }
+    </script>
+  <script type="module" crossorigin src="/assets/index-BMgat_S4.js"></script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-background-light antialiased selection:bg-primary selection:text-white transition-colors duration-300">
+    <div id="root"></div>
+</body></html>

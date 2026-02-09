@@ -11,9 +11,27 @@ export const LocationsPage: React.FC = () => {
       try {
         setLoading(true);
         const data = await getAllLocations();
-        // Override address, hours and map_url to match requested details
-        // and only show the first location to prevent duplicates
-        const updatedData = data.slice(0, 1).map(loc => ({
+        
+        let locationsToSource = data || [];
+        
+        // If no locations found in DB, use a default one
+        if (locationsToSource.length === 0) {
+          locationsToSource = [{
+            id: 'default',
+            name: 'PAYPYA Cafe',
+            phone: '+62 822-xxxx-xxxx',
+            email: 'hello@paypya.com',
+            display_order: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            address: '',
+            city: '',
+            image_url: '',
+            map_url: ''
+          } as any];
+        }
+
+        const updatedData = locationsToSource.slice(0, 1).map(loc => ({
           ...loc,
           image_url: locationImage,
           address: 'Jl. Waiwerang Sagu, Waiwerang Kota, Kec. Adonara Tim.',
@@ -27,6 +45,25 @@ export const LocationsPage: React.FC = () => {
         setLocations(updatedData as DbLocation[]);
       } catch (err) {
         console.error('Failed to load locations:', err);
+        // Fallback on error too
+        const fallbackData = [{
+          id: 'error-fallback',
+          name: 'PAYPYA Cafe',
+          phone: '+62 822-xxxx-xxxx',
+          email: 'hello@paypya.com',
+          image_url: locationImage,
+          address: 'Jl. Waiwerang Sagu, Waiwerang Kota, Kec. Adonara Tim.',
+          city: 'Kabupaten Flores Timur, Nusa Tenggara Tim.',
+          map_url: 'https://maps.app.goo.gl/HjaqEKW3vso7Gkyg7',
+          hours: [
+            { day: 'Mon - Fri', time: '11.00 - 00:00' },
+            { day: 'Sat - Sun', time: '17:00 - 00:00' }
+          ],
+          display_order: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as any];
+        setLocations(fallbackData as DbLocation[]);
       } finally {
         setLoading(false);
       }
