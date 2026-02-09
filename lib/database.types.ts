@@ -98,6 +98,7 @@ export interface Database {
           status: string
           table_number: string | null
           payment_method: string | null
+          payment_status: string
           created_at: string
           updated_at: string
         }
@@ -109,6 +110,7 @@ export interface Database {
           status?: string
           table_number?: string | null
           payment_method?: string | null
+          payment_status?: string
           created_at?: string
           updated_at?: string
         }
@@ -120,6 +122,7 @@ export interface Database {
           status?: string
           table_number?: string | null
           payment_method?: string | null
+          payment_status?: string
           created_at?: string
           updated_at?: string
         }

@@ -46,6 +46,7 @@ export interface Order {
   tableNumber?: string;
   paymentMethod?: 'cashier' | 'wa_checkout';
   order_number?: string;
+  paymentStatus: 'Unpaid' | 'Paid' | 'Refunded';
 }
 
 // Helper functions to convert database types to app types

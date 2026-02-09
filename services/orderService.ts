@@ -36,7 +36,8 @@ export async function createOrder(
     .insert({
       ...orderData,
       order_number: orderNumber,
-      status: 'Pending'
+      status: 'Pending',
+      payment_status: 'Unpaid'
     })
     .select()
     .single();
@@ -65,6 +66,21 @@ export async function updateOrderStatus(orderId: string, status: string) {
   const { data, error } = await supabase
     .from('orders')
     .update({ status })
+    .eq('id', orderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Update payment status
+ */
+export async function updatePaymentStatus(orderId: string, payment_status: string) {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ payment_status })
     .eq('id', orderId)
     .select()
     .single();

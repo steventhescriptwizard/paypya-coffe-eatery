@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumbs, BreadcrumbItem } from '../../components/Breadcrumbs';
 import { RoutePath } from '../types';
-import { getAllOrders, updateOrderStatus, deleteOrder } from '../../services/orderService';
+import { getAllOrders, updateOrderStatus, deleteOrder, updatePaymentStatus } from '../../services/orderService';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { formatIDR } from '../../utils/format';
 import { InvoicePage } from '../../components/InvoicePage';
@@ -39,6 +39,15 @@ export const OrderList: React.FC = () => {
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     } catch (error) {
       alert('Failed to update status');
+    }
+  };
+
+  const handlePaymentStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      await updatePaymentStatus(orderId, newStatus);
+      setOrders(orders.map(o => o.id === orderId ? { ...o, payment_status: newStatus } : o));
+    } catch (error) {
+      alert('Failed to update payment status');
     }
   };
 
@@ -155,6 +164,7 @@ export const OrderList: React.FC = () => {
                   <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider">Customer</th>
                   <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider hidden lg:table-cell">Items</th>
                   <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider">Total</th>
+                  <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider">Payment</th>
                   <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-xs font-bold text-text-sub-light dark:text-text-sub-dark uppercase tracking-wider text-right">Actions</th>
                 </tr>
@@ -190,9 +200,24 @@ export const OrderList: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <select 
+                        value={order.payment_status || 'Unpaid'}
+                        onChange={(e) => handlePaymentStatusChange(order.id, e.target.value)}
+                        className={`text-[10px] font-black px-3 py-1.5 rounded-full border-none appearance-none cursor-pointer transition-all shadow-sm ${
+                          order.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' : 
+                          order.payment_status === 'Refunded' ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' :
+                          'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300'
+                        }`}
+                      >
+                        <option value="Unpaid">Unpaid</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Refunded">Refunded</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4">
+                      <select 
                         value={order.status}
                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className={`text-xs font-black px-3 py-1.5 rounded-full border-none appearance-none cursor-pointer transition-all shadow-sm ${
+                        className={`text-[10px] font-black px-3 py-1.5 rounded-full border-none appearance-none cursor-pointer transition-all shadow-sm ${
                           order.status === 'Completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' : 
                           order.status === 'Cooking' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' :
                           order.status === 'Cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' :
@@ -214,6 +239,7 @@ export const OrderList: React.FC = () => {
                                 date: order.created_at,
                                 total: Number(order.total_amount),
                                 status: order.status,
+                                paymentStatus: order.payment_status || 'Unpaid',
                                 customerName: order.customer_name,
                                 tableNumber: order.table_number,
                                 items: order.order_items.map((oi: any) => ({
